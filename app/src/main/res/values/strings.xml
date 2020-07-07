@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">SkyEng</string>
+    <string name="str_search_btn">Search</string>
+    <string name="str_input_a_word_hint">Input a word</string>
+</resources>
