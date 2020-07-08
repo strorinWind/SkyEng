@@ -13,12 +13,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.strorin.skyeng.R
 import ru.strorin.skyeng.data.Translation
+import ru.strorin.skyeng.ui.search.translations.TranslationAdapter
 
 class SearchFragment: Fragment(), SearchView {
 
     private lateinit var searchButton: Button
     private lateinit var queryInput: EditText
     private lateinit var meaningRecyclerView: RecyclerView
+
+    private lateinit var adapter: TranslationAdapter
 
     private val model: SearchViewModel by viewModels { SearchViewModelFactory() }
 
@@ -36,7 +39,7 @@ class SearchFragment: Fragment(), SearchView {
     override fun onStart() {
         super.onStart()
         searchButton.setOnClickListener {
-            model.onSearchClicked(queryInput.text.toString())
+            model.onSearchClicked(queryInput.text.toString(), this)
         }
     }
 
@@ -49,14 +52,14 @@ class SearchFragment: Fragment(), SearchView {
     }
 
     override fun setTranslationsList(list: List<Translation>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        adapter.setDataset(list)
     }
 
     private fun setupUi(context: Context){
         meaningRecyclerView.layoutManager = LinearLayoutManager(context)
 
-//        meaningRecyclerView = BidRecyclerAdapter(context)
-//        bidsRecyclerView.adapter = bidAdapter
+        adapter = TranslationAdapter(context)
+        meaningRecyclerView.adapter = adapter
     }
 
     private fun findViews(view: View) {
