@@ -1,5 +1,6 @@
 package ru.strorin.skyeng.ui.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,6 +41,7 @@ class SearchViewModel(
                     .map { it.meanings }
                     .flatten()
                     .map { Translation(it.translation.text) }
+                Log.d("TESTTEST", res.toString())
                 view.setTranslationsList(res)
             } else {
 //                viewState.showErrorLoading()
