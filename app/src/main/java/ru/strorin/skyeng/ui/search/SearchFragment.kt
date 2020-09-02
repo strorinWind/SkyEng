@@ -45,8 +45,10 @@ class SearchFragment: Fragment(), SearchView {
     }
 
     override fun setNetworkError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+        meaningRecyclerView.visibility = View.GONE
+        error_layout.visibility = View.VISIBLE
+        error_text.setText(R.string.str_problem_with_connection)
+        error_image.setImageResource(R.drawable.ic_baseline_wifi_48)    }
 
     override fun setTranslationsList(list: List<Translation>) {
         if (list.isNotEmpty()) {

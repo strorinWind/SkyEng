@@ -7,4 +7,6 @@ interface SearchView {
     fun setNetworkError()
 
     fun setTranslationsList(list: List<Translation>)
+
+    fun openDetails()
 }

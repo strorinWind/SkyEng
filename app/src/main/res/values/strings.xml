@@ -4,4 +4,5 @@
     <string name="str_input_a_word_hint">Input a word</string>
 
     <string name="str_no_translations_found">No translations found</string>
+    <string name="str_problem_with_connection">There is a problem with internet connection. Check it and try again.</string>
 </resources>

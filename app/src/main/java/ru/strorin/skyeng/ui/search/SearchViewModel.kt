@@ -1,6 +1,5 @@
 package ru.strorin.skyeng.ui.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -37,22 +36,28 @@ class SearchViewModel(
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {
+
                 val res = body
-                    .map { it.meanings }
-                    .flatten()
-                    .map { Translation(it.translation.text) }
-                Log.d("TESTTEST", res.toString())
+                    .map {
+                            it ->
+                        val meaningsList = it.meanings.map { it.translation.text }
+
+                        Translation(
+                            meaningsList.joinToString (", " )
+                        )
+                    }
                 view.setTranslationsList(res)
             } else {
-//                viewState.showErrorLoading()
+                view.setNetworkError()
             }
         } else {
-//            viewState.showErrorLoading()
+            view.setNetworkError()
         }
     }
 
     private fun handleError(e: Throwable, view: SearchView){
         e.printStackTrace()
+        view.setNetworkError()
     }
 }
 
