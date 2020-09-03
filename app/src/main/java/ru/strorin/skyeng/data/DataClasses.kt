@@ -1,11 +1,7 @@
 package ru.strorin.skyeng.data
 
-data class Translation(
-    val text: String
-)
-
-data class TranslationDetails(
+data class Word(
+    val id: Int,
     val text: String,
-    val meaningsList: List<String>,
-    val imageUrl: String = ""
+    val meanings: String
 )

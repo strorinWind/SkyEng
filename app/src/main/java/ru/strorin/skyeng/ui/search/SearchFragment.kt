@@ -13,8 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.search_fragment.*
 import ru.strorin.skyeng.R
-import ru.strorin.skyeng.data.Translation
+import ru.strorin.skyeng.data.Word
+import ru.strorin.skyeng.network.WordTranslationDao
+import ru.strorin.skyeng.ui.details.DetailsFragment
 import ru.strorin.skyeng.ui.search.translations.TranslationAdapter
+import ru.strorin.skyeng.utils.hideKeyboard
 
 class SearchFragment: Fragment(), SearchView {
 
@@ -25,6 +28,12 @@ class SearchFragment: Fragment(), SearchView {
     private lateinit var adapter: TranslationAdapter
 
     private val model: SearchViewModel by viewModels { SearchViewModelFactory() }
+
+    private val onItemClickListener = object: TranslationAdapter.OnItemClickListener {
+        override fun onItemClick(word: Word) {
+            model.onItemClicked(word.id, this@SearchFragment)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +49,7 @@ class SearchFragment: Fragment(), SearchView {
     override fun onStart() {
         super.onStart()
         searchButton.setOnClickListener {
+            hideKeyboard(searchButton.context)
             model.onSearchClicked(queryInput.text.toString(), this)
         }
     }
@@ -50,7 +60,7 @@ class SearchFragment: Fragment(), SearchView {
         error_text.setText(R.string.str_problem_with_connection)
         error_image.setImageResource(R.drawable.ic_baseline_wifi_48)    }
 
-    override fun setTranslationsList(list: List<Translation>) {
+    override fun setTranslationsList(list: List<Word>) {
         if (list.isNotEmpty()) {
             adapter.setDataset(list)
             meaningRecyclerView.visibility = View.VISIBLE
@@ -58,6 +68,13 @@ class SearchFragment: Fragment(), SearchView {
         } else {
             showEmptyTranslationsList()
         }
+    }
+
+    override fun openDetails(word: WordTranslationDao) {
+        parentFragmentManager.beginTransaction()
+            .add(R.id.container, DetailsFragment.newInstance(word))
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun showEmptyTranslationsList() {
@@ -70,7 +87,7 @@ class SearchFragment: Fragment(), SearchView {
     private fun setupUi(context: Context){
         meaningRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        adapter = TranslationAdapter(context)
+        adapter = TranslationAdapter(context, onItemClickListener)
         meaningRecyclerView.adapter = adapter
     }
 

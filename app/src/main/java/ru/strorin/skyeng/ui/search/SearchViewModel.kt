@@ -6,7 +6,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
-import ru.strorin.skyeng.data.Translation
+import ru.strorin.skyeng.data.Word
 import ru.strorin.skyeng.network.ApiLoader
 import ru.strorin.skyeng.network.SkyengApi
 import ru.strorin.skyeng.network.WordTranslationDao
@@ -18,8 +18,10 @@ class SearchViewModel(
 
     private val compositeDisposable = CompositeDisposable()
 
+    private var wordsList: List<WordTranslationDao> = emptyList()
 
     fun onSearchClicked(query: String, view: SearchView){
+        wordsList = emptyList()
         val disposable = api
             .wordSearch(query)
             .subscribeOn(Schedulers.io())
@@ -32,18 +34,26 @@ class SearchViewModel(
         compositeDisposable.add(disposable)
     }
 
+    fun onItemClicked(wordId: Int, view: SearchView) {
+        wordsList
+            .find { it.id == wordId }
+            ?.let {
+                view.openDetails(it)
+            }
+    }
+
     private fun transformToUiClassTranslation(view: SearchView, response: Response<List<WordTranslationDao>>) {
         if (response.isSuccessful) {
             val body = response.body()
             if (body != null) {
+                wordsList = body
 
                 val res = body
-                    .map {
-                            it ->
-                        val meaningsList = it.meanings.map { it.translation.text }
-
-                        Translation(
-                            meaningsList.joinToString (", " )
+                    .map { dao ->
+                        Word(
+                            dao.id,
+                            dao.text,
+                            dao.meanings.joinToString(", ") { it.translation.text }
                         )
                     }
                 view.setTranslationsList(res)
