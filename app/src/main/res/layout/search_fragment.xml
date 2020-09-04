@@ -25,14 +25,16 @@
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/str_search_btn" />
+            android:text="@string/str_search_btn"
+            android:focusableInTouchMode="true" />
 
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/translation_table"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true" />
 
     <LinearLayout
         android:id="@+id/error_layout"

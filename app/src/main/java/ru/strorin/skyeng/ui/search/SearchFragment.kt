@@ -9,13 +9,13 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.search_fragment.*
 import ru.strorin.skyeng.R
 import ru.strorin.skyeng.data.Word
 import ru.strorin.skyeng.network.WordTranslationDao
-import ru.strorin.skyeng.ui.details.DetailsFragment
 import ru.strorin.skyeng.ui.search.translations.TranslationAdapter
 import ru.strorin.skyeng.utils.hideKeyboard
 
@@ -49,7 +49,8 @@ class SearchFragment: Fragment(), SearchView {
     override fun onStart() {
         super.onStart()
         searchButton.setOnClickListener {
-            hideKeyboard(searchButton.context)
+//            searchButton.requestFocus()
+//            queryInput.clearFocus()
             model.onSearchClicked(queryInput.text.toString(), this)
         }
     }
@@ -71,10 +72,13 @@ class SearchFragment: Fragment(), SearchView {
     }
 
     override fun openDetails(word: WordTranslationDao) {
-        parentFragmentManager.beginTransaction()
-            .add(R.id.container, DetailsFragment.newInstance(word))
-            .addToBackStack(null)
-            .commit()
+        val action = SearchFragmentDirections.actionSearchFragmentToDetailsFragment(word)
+        findNavController().navigate(action)
+    }
+
+    private fun hideKeyboard() {
+        val ctx = context
+        ctx?.let { hideKeyboard(ctx) }
     }
 
     private fun showEmptyTranslationsList() {
